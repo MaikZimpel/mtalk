@@ -5,6 +5,7 @@ import com.zimpel.mtalk.message.Command;
 import com.zimpel.mtalk.message.CommandMessageCodec;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import io.vertx.core.eventbus.EventBusOptions;
 import io.vertx.core.eventbus.Message;
 
 import javax.swing.*;
@@ -22,7 +23,13 @@ public class DemoMachineUi extends JFrame {
     public DemoMachineUi(String title) {
         super(title);
         actor = new ActorVerticle(title);
-        Vertx.clusteredVertx(new VertxOptions(), res -> {
+        var vrtxCnfig = new VertxOptions();
+        var evntBusOptions = new EventBusOptions();
+        evntBusOptions.setClustered(true);
+        evntBusOptions.setClusterPublicHost("192.168.178.43");
+        evntBusOptions.setClusterPublicPort(5701);
+        vrtxCnfig.setEventBusOptions(evntBusOptions);
+        Vertx.clusteredVertx(vrtxCnfig, res -> {
             if (res.succeeded()) {
                 var vrtx = res.result();
                 vrtx.deployVerticle(actor);
