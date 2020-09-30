@@ -7,6 +7,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.eventbus.EventBusOptions;
 import io.vertx.core.eventbus.Message;
+import io.vertx.core.spi.cluster.ClusterManager;
 
 import javax.swing.*;
 
