@@ -1,0 +1,6 @@
+rootProject.name = 'grapholas'
+include 'shared'
+include 'platehandler'
+include 'xps'
+include 'automation'
+

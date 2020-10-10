@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: Platehandler Prototype
+esko:
+  machine:
+    name: Platehandler
+  bus:
+    name: eskobus

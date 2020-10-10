@@ -1,0 +1,5 @@
+esko:
+  machine:
+    name: automation
+  bus:
+    name: eskobus

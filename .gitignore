@@ -17,3 +17,7 @@
 /build/
 /.gradle/
 /.idea/
+/platehandler/build/
+/automation/build/
+/shared/build/
+/xps/build/
