@@ -1,7 +1,14 @@
-package de.esko.dfs.ph.statemachine;
+package de.esko.dfs.statemachine;
 
 public enum Event {
 
+    // Automation
+    GLOBAL_ACK,
+    GLOBAL_RDY,
+    PH_RDY,
+    XPS_RDY,
+
+    // PH
     PH_LOAD_CDI,
     PH_UNLOAD_CDI,
     PH_LOAD_UV,
@@ -22,5 +29,10 @@ public enum Event {
     PH_STS_AXIS_X,
     PH_STS_AXIS_Y,
     PH_STS_AXIS_Z,
-    GLOBAL_ACK
+
+    // XPS
+    XPS_S1,
+    XPS_S2,
+    XPS_RESET,
+    XPS_ABORT
 }

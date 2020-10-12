@@ -2,6 +2,7 @@ package de.esko.dfs.ph.statemachine;
 
 public enum State {
 
+    INIT,
     MAINON,
     HOME,
     IDLE,

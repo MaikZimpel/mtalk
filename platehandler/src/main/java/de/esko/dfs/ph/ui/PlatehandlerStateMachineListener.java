@@ -1,7 +1,7 @@
 package de.esko.dfs.ph.ui;
 
-import de.esko.dfs.ph.statemachine.Event;
 import de.esko.dfs.ph.statemachine.State;
+import de.esko.dfs.statemachine.Event;
 import lombok.RequiredArgsConstructor;
 import org.springframework.statemachine.listener.StateMachineListenerAdapter;
 
@@ -14,8 +14,11 @@ public class PlatehandlerStateMachineListener extends StateMachineListenerAdapte
     public void stateEntered(org.springframework.statemachine.state.State<State, Event> state) {
         var st = state.getId();
         switch (st) {
-            case LOAD2CDI -> platehandlerUi.disable101();
-            default -> platehandlerUi.enableButtons();
+            case LOAD2CDI -> platehandlerUi.loadToCdiState();
+            case LOADFROMCDI -> platehandlerUi.loadFromCdiState();
+            case ERROR -> platehandlerUi.errorState();
+            case MAINON -> platehandlerUi.mainOnState();
+
         }
     }
 

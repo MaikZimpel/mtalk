@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: Xps Prototype
+esko:
+  machine:
+    name: XPS
+  bus:
+    name: eskobus

@@ -1,10 +1,10 @@
-package de.esko.dfs.ph.ui;
+package de.esko.dfs.xps.ui;
 
 import de.esko.dfs.actor.BusConnector;
 import de.esko.dfs.message.Command;
 import de.esko.dfs.message.CommandMessageCodec;
-import de.esko.dfs.ph.statemachine.State;
 import de.esko.dfs.statemachine.Event;
+import de.esko.dfs.xps.statemachine.State;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.eventbus.Message;
@@ -16,20 +16,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.stereotype.Component;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextPane;
+import javax.swing.*;
 
 @Component
 @Slf4j
-public class PlatehandlerUi extends JFrame {
+public class XpsUi extends JFrame {
 
     private final StateMachine<State, Event> stateMachine;
 
     private final JTextPane display = new JTextPane();
-    private final JButton loadCdiBtn = new JButton("Load CDI");
-    private final JButton unloadCdiBtn = new JButton("Unload CDI");
+    private final JButton s1Btn = new JButton("S1");
+    private final JButton s2Btn = new JButton("S2");
     private final JButton resetBtn = new JButton("Reset");
     private final JButton panicBtn = new JButton("Panic");
 
@@ -37,7 +34,7 @@ public class PlatehandlerUi extends JFrame {
     @Getter
     private String name;
 
-    public PlatehandlerUi(StateMachine<State, Event> stateMachine, BusConnector actor) {
+    public XpsUi(StateMachine<State, Event> stateMachine, BusConnector actor) {
         super();
         this.stateMachine = stateMachine;
         stateMachine.start();
@@ -53,21 +50,21 @@ public class PlatehandlerUi extends JFrame {
             }
         });
 
-        loadCdiBtn.addActionListener((e) -> actor.send(new Command(401, "Load CDI", name, Event.PH_LOAD_CDI)));
-        unloadCdiBtn.addActionListener((e) -> actor.send(new Command(402, "Unload CDI", name, Event.PH_UNLOAD_CDI)));
-        resetBtn.addActionListener((e) -> actor.send(new Command(404, "RESET", name, Event.PH_RESET)));
-        panicBtn.addActionListener((e) -> actor.send(new Command(405, "ABORT", name, Event.PH_ABORT)));
-        stateMachine.addStateListener(new PlatehandlerStateMachineListener(this));
+        s1Btn.addActionListener((e) -> actor.send(new Command(501, "XPS S1", name, Event.XPS_S1)));
+        s2Btn.addActionListener((e) -> actor.send(new Command(502, "XPS S2", name, Event.XPS_S2)));
+        resetBtn.addActionListener((e) -> actor.send(new Command(504, "RESET", name, Event.XPS_RESET)));
+        panicBtn.addActionListener((e) -> actor.send(new Command(505, "ABORT", name, Event.XPS_ABORT)));
+        stateMachine.addStateListener(new XpsStateMachineListener(this));
 
         final JPanel mainPanel = new JPanel();
-        mainPanel.add(loadCdiBtn);
-        mainPanel.add(unloadCdiBtn);
+        mainPanel.add(s1Btn);
+        mainPanel.add(s2Btn);
         mainPanel.add(resetBtn);
         mainPanel.add(panicBtn);
         mainPanel.add(display);
 
-        loadCdiBtn.setEnabled(false);
-        unloadCdiBtn.setEnabled(false);
+        s1Btn.setEnabled(false);
+        s2Btn.setEnabled(false);
         resetBtn.setEnabled(false);
         panicBtn.setEnabled(false);
 
@@ -89,29 +86,23 @@ public class PlatehandlerUi extends JFrame {
     }
 
     void mainOnState() {
-        loadCdiBtn.setEnabled(true);
-        unloadCdiBtn.setEnabled(true);
+        log.debug("ENTER MAIN ON STATE");
+        s1Btn.setEnabled(true);
+        s2Btn.setEnabled(true);
         resetBtn.setEnabled(false);
         panicBtn.setEnabled(true);
     }
 
-    void loadToCdiState() {
-        loadCdiBtn.setEnabled(false);
-        unloadCdiBtn.setEnabled(false);
-        resetBtn.setEnabled(true);
-        panicBtn.setEnabled(true);
-    }
-
-    void loadFromCdiState() {
-        loadCdiBtn.setEnabled(false);
-        unloadCdiBtn.setEnabled(false);
+    void busyState() {
+        s1Btn.setEnabled(false);
+        s2Btn.setEnabled(false);
         resetBtn.setEnabled(true);
         panicBtn.setEnabled(true);
     }
 
     public void errorState() {
-        loadCdiBtn.setEnabled(false);
-        unloadCdiBtn.setEnabled(false);
+        s1Btn.setEnabled(false);
+        s2Btn.setEnabled(false);
         resetBtn.setEnabled(true);
         panicBtn.setEnabled(false);
     }

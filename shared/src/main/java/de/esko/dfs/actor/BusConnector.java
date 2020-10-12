@@ -1,6 +1,7 @@
 package de.esko.dfs.actor;
 
 import de.esko.dfs.message.Command;
+import de.esko.dfs.statemachine.Event;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
@@ -23,6 +24,7 @@ public class BusConnector extends AbstractVerticle {
     @Override
     public void start(Promise<Void> promise) {
         log.info(machineName + " attached to event bus.");
+        send(new Command(999, "Connected to Bus", machineName, Event.GLOBAL_RDY));
         promise.complete();
     }
 
