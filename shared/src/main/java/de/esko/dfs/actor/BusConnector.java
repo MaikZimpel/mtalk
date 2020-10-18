@@ -24,7 +24,7 @@ public class BusConnector extends AbstractVerticle {
     @Override
     public void start(Promise<Void> promise) {
         log.info(machineName + " attached to event bus.");
-        send(new Command(999, "Connected to Bus", machineName, Event.GLOBAL_RDY));
+        send(new Command(999, "Connected to Bus", machineName, Event.GLOBAL_RDY.name()));
         promise.complete();
     }
 

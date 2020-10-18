@@ -18,5 +18,6 @@ public enum State {
     RESET,
     ERROR,
     DEBUG,
-    AWAITING_REPLY
+    AWAITING_REPLY,
+    REMOTE_CONTROL
 }

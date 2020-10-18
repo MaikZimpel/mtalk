@@ -3,6 +3,7 @@ package de.esko.dfs.ph.ui;
 import de.esko.dfs.actor.BusConnector;
 import de.esko.dfs.message.Command;
 import de.esko.dfs.message.CommandMessageCodec;
+import de.esko.dfs.ph.statemachine.PhEvent;
 import de.esko.dfs.ph.statemachine.State;
 import de.esko.dfs.statemachine.Event;
 import io.vertx.core.Vertx;
@@ -20,12 +21,15 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Slf4j
 public class PlatehandlerUi extends JFrame {
 
     private final StateMachine<State, Event> stateMachine;
+    private final BusConnector actor;
 
     private final JTextPane display = new JTextPane();
     private final JButton loadCdiBtn = new JButton("Load CDI");
@@ -40,7 +44,7 @@ public class PlatehandlerUi extends JFrame {
     public PlatehandlerUi(StateMachine<State, Event> stateMachine, BusConnector actor) {
         super();
         this.stateMachine = stateMachine;
-        stateMachine.start();
+        this.actor = actor;
         var vertxOptions = new VertxOptions();
         vertxOptions.setClusterManager(new HazelcastClusterManager(ConfigUtil.loadConfig()));
         Vertx.clusteredVertx(vertxOptions, res -> {
@@ -53,10 +57,10 @@ public class PlatehandlerUi extends JFrame {
             }
         });
 
-        loadCdiBtn.addActionListener((e) -> actor.send(new Command(401, "Load CDI", name, Event.PH_LOAD_CDI)));
-        unloadCdiBtn.addActionListener((e) -> actor.send(new Command(402, "Unload CDI", name, Event.PH_UNLOAD_CDI)));
-        resetBtn.addActionListener((e) -> actor.send(new Command(404, "RESET", name, Event.PH_RESET)));
-        panicBtn.addActionListener((e) -> actor.send(new Command(405, "ABORT", name, Event.PH_ABORT)));
+        loadCdiBtn.addActionListener((e) -> actor.send(new Command(PhEvent.PH_LOAD_CDI.value(), "Load CDI", name, PhEvent.PH_LOAD_CDI.name())));
+        unloadCdiBtn.addActionListener((e) -> actor.send(new Command(PhEvent.PH_UNLOAD_CDI.value(), "Unload CDI", name, PhEvent.PH_UNLOAD_CDI.name())));
+        resetBtn.addActionListener((e) -> actor.send(new Command(PhEvent.PH_RESET.value(), "RESET", name, PhEvent.PH_RESET.name())));
+        panicBtn.addActionListener((e) -> actor.send(new Command(PhEvent.PH_ABORT.value(), "ABORT", name, PhEvent.PH_ABORT.name())));
         stateMachine.addStateListener(new PlatehandlerStateMachineListener(this));
 
         final JPanel mainPanel = new JPanel();
@@ -78,14 +82,17 @@ public class PlatehandlerUi extends JFrame {
 
     private void onMessage(Message<Command> commandMessage) {
         var command = commandMessage.body();
-        display.setText(display.getText() + "\n" + "received: " + commandMessage.body() + " from " + command.getOrigin());
-        if (command.getEvent() == Event.GLOBAL_RDY) {
-            if (command.getOrigin().equals(name)) {
-                stateMachine.sendEvent(command.getEvent());
+        Event event = Event.valueOf(command.getEvent());
+        if (event != null) {
+            if (!command.getOrigin().equals(name)) {
+                addToDisplay("received: " + commandMessage.body().getDescription() + " from " + command.getOrigin());
             }
-        } else {
-            stateMachine.sendEvent(command.getEvent());
+            stateMachine.sendEvent(event);
         }
+    }
+
+    public void addToDisplay(String text) {
+        display.setText(display.getText() + "\n" + text);
     }
 
     void mainOnState() {
@@ -100,6 +107,26 @@ public class PlatehandlerUi extends JFrame {
         unloadCdiBtn.setEnabled(false);
         resetBtn.setEnabled(true);
         panicBtn.setEnabled(true);
+        sendCommandDelayed(new Command(PhEvent.PH_RESET.value(), "RESET", name, PhEvent.PH_RESET.name()), 10);
+    }
+
+    void rcState() {
+        loadCdiBtn.setEnabled(false);
+        unloadCdiBtn.setEnabled(false);
+        resetBtn.setEnabled(false);
+        panicBtn.setEnabled(true);
+    }
+
+    public void sendCommandDelayed(Command command, int secondsDelay) {
+        var f = new CompletableFuture<>();
+        f.completeAsync(() -> {
+            try {
+                TimeUnit.SECONDS.sleep(secondsDelay);
+            } catch (InterruptedException e) {
+                log.error("Thread interrupted.", e);
+            }
+            return null;
+        }).thenRun(() -> actor.send(command));
     }
 
     void loadFromCdiState() {

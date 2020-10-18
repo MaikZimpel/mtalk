@@ -20,7 +20,7 @@ public class Application {
                 .run(args);
         EventQueue.invokeLater(() -> {
             var ui = ctx.getBean(XpsUi.class);
-            ui.setSize(800, 600);
+            ui.setSize(400, 600);
             ui.setTitle(ui.getName());
             ui.setVisible(true);
         });

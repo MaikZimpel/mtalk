@@ -1,6 +1,5 @@
 package de.esko.dfs.message;
 
-import de.esko.dfs.statemachine.Event;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
 import io.vertx.core.json.JsonObject;
@@ -32,7 +31,7 @@ public class CommandMessageCodec implements MessageCodec<Command, Command> {
                 jsonContent.getInteger("code"),
                 jsonContent.getString("description"),
                 jsonContent.getString("origin"),
-                Event.valueOf(jsonContent.getString("event"))
+                jsonContent.getString("event")
         );
     }
 
