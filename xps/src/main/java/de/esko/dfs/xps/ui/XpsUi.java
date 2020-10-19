@@ -91,7 +91,7 @@ public class XpsUi extends JFrame {
         display.setText(display.getText() + "\n" + text);
     }
 
-    public void sendCommandInXSeconds(Command command, int secondsDelay) {
+    public void sendCommandDelayed(Command command, int secondsDelay) {
         var f = new CompletableFuture<>();
         f.completeAsync(() -> {
             try {
@@ -122,5 +122,12 @@ public class XpsUi extends JFrame {
         s2Btn.setEnabled(false);
         resetBtn.setEnabled(true);
         panicBtn.setEnabled(false);
+    }
+
+    public void rcState() {
+        s1Btn.setEnabled(false);
+        s2Btn.setEnabled(false);
+        resetBtn.setEnabled(false);
+        panicBtn.setEnabled(true);
     }
 }

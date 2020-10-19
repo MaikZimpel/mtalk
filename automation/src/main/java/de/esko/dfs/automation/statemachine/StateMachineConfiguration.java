@@ -40,7 +40,7 @@ public class StateMachineConfiguration extends StateMachineConfigurerAdapter<Sta
         transitions.withExternal().source(RDY).event(Event.AUTO_SETUP).target(WAITING);
         transitions.withExternal().source(WAITING).target(SETUP).event(Event.AUTO_PH_RDY).guard(isXpsRdy());
         transitions.withExternal().source(WAITING).target(SETUP).event(Event.AUTO_XPS_RDY).guard(isPhRdy());
-        transitions.withExternal().source(SETUP).event(Event.PROGRAM_START).guard(canStartProgram()).target(BUSY);
+        transitions.withExternal().source(SETUP).event(Event.AUTO_START).guard(canStartProgram()).target(BUSY).action(startProgram());
         transitions.withExternal().source(BUSY).event(Event.AUTO_LOAD_CDI).target(BUSY).action(loadingCdi());
         transitions.withExternal().source(BUSY).event(Event.AUTO_CDI_LOADED).target(BUSY).action(cdiLoaded());
         transitions.withExternal().source(BUSY).event(Event.AUTO_S1).target(BUSY).guard(isCdiLoaded()).action(s1());
@@ -93,6 +93,7 @@ public class StateMachineConfiguration extends StateMachineConfigurerAdapter<Sta
         return ctx -> {
             ctx.getExtendedState().getVariables().put("PH_RDY", Boolean.FALSE);
             ctx.getExtendedState().getVariables().put("XPS_RDY", Boolean.FALSE);
+            ctx.getExtendedState().getVariables().put("AUTO_STARTED", Boolean.FALSE);
             ctx.getExtendedState().getVariables().put("CDI_LOADING", Boolean.FALSE);
             ctx.getExtendedState().getVariables().put("CDI_LOADED", Boolean.FALSE);
             ctx.getExtendedState().getVariables().put("S1_WIP", Boolean.FALSE);
@@ -102,6 +103,11 @@ public class StateMachineConfiguration extends StateMachineConfigurerAdapter<Sta
             ctx.getExtendedState().getVariables().put("CDI_UNLOADING", Boolean.FALSE);
             ctx.getExtendedState().getVariables().put("CDI_UNLOADED", Boolean.FALSE);
         };
+    }
+
+    @Bean
+    public Action<State, Event> startProgram() {
+        return ctx -> ctx.getExtendedState().getVariables().put("AUTO_STARTED", Boolean.TRUE);
     }
 
     @Bean

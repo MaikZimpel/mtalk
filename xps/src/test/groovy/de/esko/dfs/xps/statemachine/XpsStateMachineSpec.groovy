@@ -19,7 +19,7 @@ class XpsStateMachineSpec extends Specification {
         stateMachine
     }
 
-    def "Green scenario" () {
+    def "Green scenario manual operation" () {
         given: "A a normal series of events (GLOBAL_RDY -> XPS_S1 -> XPS_S2 -> RESET"
         stateMachine
         stateMachine.sendEvent(Event.GLOBAL_RDY)

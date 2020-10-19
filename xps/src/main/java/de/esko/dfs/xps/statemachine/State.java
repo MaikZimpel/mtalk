@@ -6,5 +6,6 @@ public enum State {
     MAIN_ON,
     BUSY,
     IDLE,
-    ERROR
+    ERROR,
+    REMOTE_CONTROL
 }

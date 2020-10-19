@@ -18,16 +18,42 @@ public class XpsStateMachineListener extends StateMachineListenerAdapter<State, 
             case BUSY -> xpsUi.busyState();
             case MAIN_ON -> xpsUi.mainOnState();
             case ERROR -> xpsUi.errorState();
+            case REMOTE_CONTROL -> xpsUi.rcState();
         }
     }
 
     @Override
     public void extendedStateChanged(Object key, Object value) {
-        if(key.toString().equals("IS_AUTO")) {
-            xpsUi.addToDisplay("Extended State set to IS_AUTO = " + value);
-            if (Boolean.parseBoolean(value.toString())) {
-                xpsUi.sendCommandInXSeconds(new Command(Event.AUTO_XPS_RDY.value(), "XPS Ready", xpsUi.getName(),  Event.AUTO_XPS_RDY.name()), 10);
-            }
+        var changedStateKey = key.toString();
+        switch (changedStateKey) {
+            case "IS_AUTO" -> remoteControlStateChanged(Boolean.parseBoolean(value.toString()));
+            case "S1_WIP" -> s1WipStatusChanged(Boolean.parseBoolean(value.toString()));
+            case "S2_WIP" -> s2WipStatusChanged(Boolean.parseBoolean(value.toString()));
+        }
+
+    }
+
+    private void remoteControlStateChanged(boolean isAuto) {
+        xpsUi.addToDisplay("Extended State IS_AUTO=" + isAuto);
+        if (isAuto) {
+            xpsUi.sendCommandDelayed(new Command(Event.AUTO_XPS_RDY.value(), "XPS Ready", xpsUi.getName(),
+                    Event.AUTO_XPS_RDY.name()), 10);
+        }
+    }
+
+    private void s1WipStatusChanged(Boolean isWip) {
+        xpsUi.addToDisplay("Extended State S1_WIP=" + isWip);
+        if (isWip) {
+            xpsUi.sendCommandDelayed(new Command(Event.AUTO_S1_FINISHED.value(), "AUTO S1 FINISHED",
+                    xpsUi.getName(), Event.AUTO_S1_FINISHED.name()), 7);
+        }
+    }
+
+    private void s2WipStatusChanged(Boolean isWip) {
+        xpsUi.addToDisplay("Extended State S2_WIP=" + isWip);
+        if (isWip) {
+            xpsUi.sendCommandDelayed(new Command(Event.AUTO_S2_FINISHED.value(), "AUTO S2 FINISHED",
+                    xpsUi.getName(), Event.AUTO_S2_FINISHED.name()), 3);
         }
     }
 

@@ -21,6 +21,7 @@ class AutomationStateMachineSpec extends Specification {
         and: "Extended State is cleared"
         automationStateMachine.extendedState.variables.get("PH_RDY", Boolean.class) == Boolean.FALSE
         automationStateMachine.extendedState.variables.get("XPS_RDY", Boolean.class) == Boolean.FALSE
+        automationStateMachine.extendedState.variables.get("AUTO_STARTED", Boolean.class) == Boolean.FALSE
         automationStateMachine.extendedState.variables.get("CDI_LOADING", Boolean.class) == Boolean.FALSE
         automationStateMachine.extendedState.variables.get("CDI_LOADED", Boolean.class) == Boolean.FALSE
         automationStateMachine.extendedState.variables.get("S1_WIP", Boolean.class) == Boolean.FALSE
@@ -48,12 +49,13 @@ class AutomationStateMachineSpec extends Specification {
         automationStateMachine.state.id == SETUP
 
         when: "PROGRAM START Event is received"
-        automationStateMachine.sendEvent(Event.PROGRAM_START)
+        automationStateMachine.sendEvent(Event.AUTO_START)
         then: "State is BUSY"
         automationStateMachine.state.id == BUSY
         and: "Extended State is as follows:"
         automationStateMachine.extendedState.variables.get("PH_RDY", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("XPS_RDY", Boolean.class) == Boolean.TRUE
+        automationStateMachine.extendedState.variables.get("AUTO_STARTED", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("CDI_LOADING", Boolean.class) == Boolean.FALSE
         automationStateMachine.extendedState.variables.get("CDI_LOADED", Boolean.class) == Boolean.FALSE
         automationStateMachine.extendedState.variables.get("S1_WIP", Boolean.class) == Boolean.FALSE
@@ -70,6 +72,7 @@ class AutomationStateMachineSpec extends Specification {
         and: "Extended State is as follows"
         automationStateMachine.extendedState.variables.get("PH_RDY", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("XPS_RDY", Boolean.class) == Boolean.TRUE
+        automationStateMachine.extendedState.variables.get("AUTO_STARTED", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("CDI_LOADING", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("CDI_LOADED", Boolean.class) == Boolean.FALSE
         automationStateMachine.extendedState.variables.get("S1_WIP", Boolean.class) == Boolean.FALSE
@@ -86,6 +89,7 @@ class AutomationStateMachineSpec extends Specification {
         and: "Extended State is as follows"
         automationStateMachine.extendedState.variables.get("PH_RDY", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("XPS_RDY", Boolean.class) == Boolean.TRUE
+        automationStateMachine.extendedState.variables.get("AUTO_STARTED", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("CDI_LOADING", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("CDI_LOADED", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("S1_WIP", Boolean.class) == Boolean.FALSE
@@ -102,6 +106,7 @@ class AutomationStateMachineSpec extends Specification {
         and: "Extended State is as follows"
         automationStateMachine.extendedState.variables.get("PH_RDY", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("XPS_RDY", Boolean.class) == Boolean.TRUE
+        automationStateMachine.extendedState.variables.get("AUTO_STARTED", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("CDI_LOADING", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("CDI_LOADED", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("S1_WIP", Boolean.class) == Boolean.TRUE
@@ -118,6 +123,7 @@ class AutomationStateMachineSpec extends Specification {
         and: "Extended State is as follows"
         automationStateMachine.extendedState.variables.get("PH_RDY", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("XPS_RDY", Boolean.class) == Boolean.TRUE
+        automationStateMachine.extendedState.variables.get("AUTO_STARTED", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("CDI_LOADING", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("CDI_LOADED", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("S1_WIP", Boolean.class) == Boolean.TRUE
@@ -134,6 +140,7 @@ class AutomationStateMachineSpec extends Specification {
         and: "Extended State is as follows"
         automationStateMachine.extendedState.variables.get("PH_RDY", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("XPS_RDY", Boolean.class) == Boolean.TRUE
+        automationStateMachine.extendedState.variables.get("AUTO_STARTED", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("CDI_LOADING", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("CDI_LOADED", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("S1_WIP", Boolean.class) == Boolean.TRUE
@@ -150,6 +157,7 @@ class AutomationStateMachineSpec extends Specification {
         and: "Extended State is as follows"
         automationStateMachine.extendedState.variables.get("PH_RDY", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("XPS_RDY", Boolean.class) == Boolean.TRUE
+        automationStateMachine.extendedState.variables.get("AUTO_STARTED", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("CDI_LOADING", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("CDI_LOADED", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("S1_WIP", Boolean.class) == Boolean.TRUE
@@ -166,6 +174,7 @@ class AutomationStateMachineSpec extends Specification {
         and: "Extended State is as follows"
         automationStateMachine.extendedState.variables.get("PH_RDY", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("XPS_RDY", Boolean.class) == Boolean.TRUE
+        automationStateMachine.extendedState.variables.get("AUTO_STARTED", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("CDI_LOADING", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("CDI_LOADED", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("S1_WIP", Boolean.class) == Boolean.TRUE
@@ -181,6 +190,7 @@ class AutomationStateMachineSpec extends Specification {
         and: "Extended State is as follows"
         automationStateMachine.extendedState.variables.get("PH_RDY", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("XPS_RDY", Boolean.class) == Boolean.TRUE
+        automationStateMachine.extendedState.variables.get("AUTO_STARTED", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("CDI_LOADING", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("CDI_LOADED", Boolean.class) == Boolean.TRUE
         automationStateMachine.extendedState.variables.get("S1_WIP", Boolean.class) == Boolean.TRUE
@@ -196,6 +206,7 @@ class AutomationStateMachineSpec extends Specification {
         and: "Extended State is cleared"
         automationStateMachine.extendedState.variables.get("PH_RDY", Boolean.class) == Boolean.FALSE
         automationStateMachine.extendedState.variables.get("XPS_RDY", Boolean.class) == Boolean.FALSE
+        automationStateMachine.extendedState.variables.get("AUTO_STARTED", Boolean.class) == Boolean.FALSE
         automationStateMachine.extendedState.variables.get("CDI_LOADING", Boolean.class) == Boolean.FALSE
         automationStateMachine.extendedState.variables.get("CDI_LOADED", Boolean.class) == Boolean.FALSE
         automationStateMachine.extendedState.variables.get("S1_WIP", Boolean.class) == Boolean.FALSE

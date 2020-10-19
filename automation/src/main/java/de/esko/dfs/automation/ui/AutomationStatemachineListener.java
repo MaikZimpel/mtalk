@@ -20,6 +20,7 @@ public class AutomationStatemachineListener extends StateMachineListenerAdapter<
         switch (key.toString()) {
             case "PH_RDY" -> ui.addToDisplay("PH ready = " + value);
             case "XPS_RDY" -> ui.addToDisplay("XPS ready = " + value);
+            case "AUTO_STARTED" -> startProgram(Boolean.parseBoolean(value.toString()));
             case "CDI_LOADING" -> loadingCdiState(Boolean.parseBoolean(value.toString()));
             case "CDI_LOADED" -> cdiLoadedStateChanged(Boolean.parseBoolean(value.toString()));
             case "S1_WIP" -> s1WipStateChanged(Boolean.parseBoolean(value.toString()));
@@ -30,6 +31,13 @@ public class AutomationStatemachineListener extends StateMachineListenerAdapter<
             case "S2_DONE" -> s2DoneStateChanged(Boolean.parseBoolean(value.toString()));
         }
 
+    }
+
+    private void startProgram(boolean start) {
+        if (start) {
+            ui.addToDisplay("Start automation sequence. LOAD CDI");
+            messageBus.send(new Command(Event.AUTO_LOAD_CDI.value(), "LOAD CDI", ui.getName(), Event.AUTO_LOAD_CDI.name()));
+        }
     }
 
     private void s2DoneStateChanged(boolean isS2Done) {
@@ -82,11 +90,6 @@ public class AutomationStatemachineListener extends StateMachineListenerAdapter<
             ui.addToDisplay("CDI Loaded.");
             messageBus.send(new Command(Event.AUTO_S1.value(), "Start S1", ui.getName(), Event.AUTO_S1.name()));
         }
-    }
-
-    @Override
-    public void stateChanged(org.springframework.statemachine.state.State<State, Event> from, org.springframework.statemachine.state.State<State, Event> to) {
-        ui.addToDisplay("State changed from " + from.getId() + " to " + to.getId());
     }
 
     @Override

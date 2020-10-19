@@ -38,9 +38,22 @@ public class StateMachineConfiguration extends StateMachineConfigurerAdapter<Sta
         transitions.withExternal().source(State.MAIN_ON).event(XpsEvent.XPS_S2).target(State.BUSY).guard(manualOperation());
         transitions.withExternal().source(State.BUSY).event(XpsEvent.XPS_RESET).target(State.MAIN_ON).guard(manualOperation());
 
-        transitions.withExternal().source(State.MAIN_ON).event(Event.AUTO_SETUP).target(State.MAIN_ON).action(setExtendedStateToAuto());
-        transitions.withExternal().source(State.MAIN_ON).event(Event.AUTO_START).target(State.BUSY).guard(autoOperation());
-        transitions.withExternal().source(State.BUSY).event(Event.AUTO_STOP).target(State.MAIN_ON).guard(autoOperation()).action(setExtendedStateToManual());
+        transitions.withExternal().source(State.MAIN_ON).event(Event.AUTO_SETUP).target(State.REMOTE_CONTROL)
+                .action(setExtendedStateToAuto());
+        transitions.withExternal().source(State.REMOTE_CONTROL).event(Event.AUTO_S1).target(State.REMOTE_CONTROL)
+                .guard(autoOperation())
+                .action(remoteS1());
+        transitions.withExternal().source(State.REMOTE_CONTROL).event(Event.AUTO_S2).target(State.REMOTE_CONTROL)
+                .guard(autoOperation())
+                .action(remoteS2());
+        transitions.withExternal().source(State.REMOTE_CONTROL).event(Event.AUTO_RESET).target(State.MAIN_ON)
+                .guard(autoOperation())
+                .action(setExtendedStateToManual())
+                .action(resetExtendedState());
+    }
+
+    private Action<State, Event> remoteS2() {
+        return ctx -> ctx.getExtendedState().getVariables().put("S2_WIP", Boolean.TRUE);
     }
 
     @Bean
@@ -61,5 +74,19 @@ public class StateMachineConfiguration extends StateMachineConfigurerAdapter<Sta
     @Bean
     public Guard<State, Event> autoOperation() {
         return ctx -> ctx.getExtendedState().get("IS_AUTO", Boolean.class);
+    }
+
+    @Bean
+    public Action<State, Event> remoteS1() {
+        return ctx -> ctx.getExtendedState().getVariables().put("S1_WIP", Boolean.TRUE);
+    }
+
+    @Bean
+    public Action<State, Event> resetExtendedState() {
+        return ctx -> {
+            ctx.getExtendedState().getVariables().put("IS_AUTO", Boolean.FALSE);
+            ctx.getExtendedState().getVariables().put("S1_WIP", Boolean.FALSE);
+            ctx.getExtendedState().getVariables().put("S2_WIP", Boolean.FALSE);
+        };
     }
 }
